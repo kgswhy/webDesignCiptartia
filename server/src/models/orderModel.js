@@ -50,17 +50,6 @@ const Order = {
             return result;
         });
     },
-    findOrderProducts(id, callback) {
-        db.query('SELECT * FROM order_products WHERE order_id = ?', [id], (err, result) => {
-            if (err) throw err;
-            callback(result);
-            if (result.length) {
-                console.log('Found order products', result);
-                return result;
-            }
-            return result({ message: 'Order products not found' }, null);
-        });
-    }
 };
 
 module.exports = Order;
