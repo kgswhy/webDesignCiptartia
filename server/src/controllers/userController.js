@@ -60,3 +60,26 @@ const loginUser = async (req, res) => {
         res.status(400).json({error: error.message});
     }
 }
+
+const getCurrentUser = async (req, res) => {
+    const { error, isValid } = validateLoginInput(req.body);
+    if (!isValid) {
+        return res.status(400).json(error);
+    }
+    try{
+        const getCurrentUser = await bcrypt.compare(req.body.password, userLogin.password);
+        if (getCurrentUser) {
+            const payload = {
+                id: userLogin.id,
+                name: userLogin.name,
+                email: userLogin.email
+            };
+            const token = await jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 3600 });
+            res.status(200).json({ success: true, token: 'Bearer ' + token });
+        }else{
+            return res.status(400).json({ password: 'Password incorrect' });
+        }
+    }catch(error){
+        res.status(400).json({error: error.message});
+    }
+}
